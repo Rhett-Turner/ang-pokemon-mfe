@@ -35,12 +35,14 @@
     "@angular/common": "^12.0.0",
     "@angular/compiler": "^12.0.0",
     "@angular/core": "^12.0.0",
+    "@angular/elements": "^12.2.16",
     "@angular/forms": "^12.0.0",
     "@angular/platform-browser": "^12.0.0",
     "@angular/platform-browser-dynamic": "^12.0.0",
     "@angular/router": "^12.0.0",
     "@nrwl/angular": "12.5.8",
     "aws-cli-js": "^2.2.3",
+    "document-register-element": "^1.7.2",
     "primeflex": "^3.0.0",
     "primeicons": "^4.1.0",
     "primeng": "^12.0.0",
@@ -79,7 +81,7 @@
     "ts-node": "~9.1.1",
     "typescript": "~4.2.4"
   },
-  "browser":{
+  "browser": {
     "child_process": true
-  }  
+  }
 }
