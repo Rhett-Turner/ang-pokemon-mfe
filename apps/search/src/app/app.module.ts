@@ -9,10 +9,10 @@ import { CarouselModule } from 'primeng/carousel';
 import { InputTextModule } from 'primeng/inputtext';
 
 import { AppComponent } from './app.component';
-import { PokemonCarouselComponent } from './pokemon-carousel/pokemon-carousel.component';
+import { PokemonCarouselModule } from './pokemon-carousel/pokemon-carousel.module';
 
 @NgModule({
-  declarations: [AppComponent, PokemonCarouselComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -21,6 +21,7 @@ import { PokemonCarouselComponent } from './pokemon-carousel/pokemon-carousel.co
     BrowserAnimationsModule,
     CarouselModule,
     InputTextModule,
+    PokemonCarouselModule
   ],
   providers: [],
   bootstrap: [AppComponent],

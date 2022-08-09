@@ -9,9 +9,7 @@
       "architect": {
         "build": {
           "builder": "ngx-build-plus:browser",
-          "outputs": [
-            "{options.outputPath}"
-          ],
+          "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/home",
             "index": "apps/home/src/index.html",
@@ -19,13 +17,8 @@
             "polyfills": "apps/home/src/polyfills.ts",
             "tsConfig": "apps/home/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "apps/home/src/favicon.ico",
-              "apps/home/src/assets"
-            ],
-            "styles": [
-              "apps/home/src/styles.scss"
-            ],
+            "assets": ["apps/home/src/favicon.ico", "apps/home/src/assets"],
+            "styles": ["apps/home/src/styles.scss"],
             "scripts": [],
             "extraWebpackConfig": "apps/home/webpack.config.js",
             "commonChunk": false
@@ -99,9 +92,7 @@
         },
         "test": {
           "builder": "ngx-build-plus:karma",
-          "outputs": [
-            "coverage/apps/home"
-          ],
+          "outputs": ["coverage/apps/home"],
           "options": {
             "jestConfig": "apps/home/jest.config.js",
             "passWithNoTests": true,
@@ -131,8 +122,31 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
+            "lintFilePatterns": ["apps/home-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    },
+    "pokemon-mf": {
+      "projectType": "library",
+      "root": "libs/pokemon-mf",
+      "sourceRoot": "libs/pokemon-mf/src",
+      "prefix": "ang-pokemon-mfe",
+      "architect": {
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/pokemon-mf"],
+          "options": {
+            "jestConfig": "libs/pokemon-mf/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
             "lintFilePatterns": [
-              "apps/home-e2e/**/*.{js,ts}"
+              "libs/pokemon-mf/src/**/*.ts",
+              "libs/pokemon-mf/src/**/*.html"
             ]
           }
         }
@@ -146,9 +160,7 @@
       "architect": {
         "build": {
           "builder": "ngx-build-plus:browser",
-          "outputs": [
-            "{options.outputPath}"
-          ],
+          "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/search",
             "index": "apps/search/src/index.html",
@@ -156,13 +168,8 @@
             "polyfills": "apps/search/src/polyfills.ts",
             "tsConfig": "apps/search/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "apps/search/src/favicon.ico",
-              "apps/search/src/assets"
-            ],
-            "styles": [
-              "apps/search/src/styles.scss"
-            ],
+            "assets": ["apps/search/src/favicon.ico", "apps/search/src/assets"],
+            "styles": ["apps/search/src/styles.scss"],
             "scripts": [],
             "extraWebpackConfig": "apps/search/webpack.config.js",
             "commonChunk": false
@@ -236,9 +243,7 @@
         },
         "test": {
           "builder": "ngx-build-plus:karma",
-          "outputs": [
-            "coverage/apps/search"
-          ],
+          "outputs": ["coverage/apps/search"],
           "options": {
             "jestConfig": "apps/search/jest.config.js",
             "passWithNoTests": true,
@@ -268,9 +273,7 @@
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": [
-              "apps/search-e2e/**/*.{js,ts}"
-            ]
+            "lintFilePatterns": ["apps/search-e2e/**/*.{js,ts}"]
           }
         }
       }

@@ -1,0 +1,16 @@
+{
+	"extensions": [
+		{
+			"extensionPath": "pokemon-search",
+			"remoteName": "search",
+			"exposedModule": "./Module",
+			"extensionModuleName": "PokemonCarouselModule"
+		},
+		{
+			"extensionPath": "userCard",
+			"remoteName": "userCard",
+			"exposedModule": "./userCard.js",
+			"extensionElementName": "user-card"
+		}
+	]
+}

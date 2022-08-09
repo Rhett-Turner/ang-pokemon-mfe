@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { loadRemoteModule } from '@angular-architects/module-federation';
-import { createCustomElement } from '@angular/elements';
+import { Route, Router } from '@angular/router';
+import { WebComponentWrapper, WebComponentWrapperOptions } from '@angular-architects/module-federation-tools';
 
 export interface ExtensionManifest {
   extensionPath: string;
   remoteName: string;
   exposedModule: string;
-  extensionComponentName: string;
+  extensionModuleName?: string;
+  extensionElementName?: string;
 }
 
 declare let AWS: any;
@@ -35,16 +37,17 @@ const s3Host =
 const searchManifest: ExtensionManifest = {
   extensionPath: 'pokemon-search',
   remoteName: 'search',
-  exposedModule: './CarouselComponent',
-  extensionComponentName: 'PokemonCarouselComponent',
+  exposedModule: './Module',
+  extensionModuleName: 'PokemonCarouselComponent',
 };
 
 const userCardManifest: ExtensionManifest = {
   extensionPath: 'userCard',
   remoteName: 'userCard',
   exposedModule: './userCard.js',
-  extensionComponentName: 'userCard',
+  extensionModuleName: 'userCard',
 };
+
 
 @Component({
   selector: 'ang-pokemon-mfe-root',
@@ -55,8 +58,27 @@ export class AppComponent implements OnInit {
   extensionList: any[] = [];
   manifest?: any;
 
+  extensionPath?: string;
+  extensionRoutes: string[] = [
+    'home',
+    'react'
+  ];
+
+  // item: WebComponentWrapperOptions = {
+  //   remoteEntry: `${s3Host}${userCardManifest.extensionPath}/remoteEntry.js`,
+  //   remoteName: userCardManifest.remoteName,
+  //   exposedModule: userCardManifest.exposedModule,
+  //   elementName: 'user-card',
+  // };
+  
+  // props = {
+  //   "email": "rhett.turner37@gmail.com"
+  // };
+
+  constructor(private router: Router) {}
+
   async loadExtension(manifest: ExtensionManifest = searchManifest) {
-    const { [`${manifest.extensionComponentName}`]: extension } =
+    const { [`${manifest.extensionModuleName}`]: extension } =
       await loadRemoteModule({
         remoteEntry: `${s3Host}${manifest.extensionPath}/remoteEntry.js`,
         remoteName: manifest.remoteName,
@@ -74,20 +96,16 @@ export class AppComponent implements OnInit {
     console.log(data);
     const extensionn = window.customElements.get('user-card');
     if (extensionn) {
-      const instance = new extensionn();
       const userCardElement: any = document.createElement('user-card');
       userCardElement['visible'] = true;
       document.body.appendChild(userCardElement);
     }
-
-    // this.extensionList?.push(extension);
-    // console.log(this.extensionList);
   }
 
   ngOnInit() {
     const params = {
       Bucket: bucketName,
-      Key: `manifest.json`,
+      Key: `mf.manifest.json`,
     };
 
     s3.getObject(params, (err: any, data: any) => {
@@ -100,7 +118,34 @@ export class AppComponent implements OnInit {
 
         this.manifest.extensions.forEach(
           (extensionManifest: ExtensionManifest) => {
-            this.loadExtension(extensionManifest);
+            let newExtensionRoute: Route = {};
+            if (extensionManifest.extensionModuleName) {
+              newExtensionRoute = {
+                path: extensionManifest.extensionPath,
+                loadChildren: () => {
+                  return loadRemoteModule({
+                    remoteEntry: `${s3Host}${extensionManifest.extensionPath}/remoteEntry.js`,
+                    remoteName: extensionManifest.remoteName,
+                    exposedModule: extensionManifest.exposedModule,
+                  }).then(m => m[extensionManifest.extensionModuleName ?? '']);}
+              };
+            } else if (extensionManifest.extensionElementName) {
+              newExtensionRoute = {
+                path: extensionManifest.extensionPath,
+                component: WebComponentWrapper,
+                data: {
+                  remoteEntry: `${s3Host}${extensionManifest.extensionPath}/remoteEntry.js`,
+                  remoteName: extensionManifest.remoteName,
+                  exposedModule: extensionManifest.exposedModule,
+                  elementName: extensionManifest.extensionElementName,
+                } as WebComponentWrapperOptions,
+              };
+            } else {
+              console.log("no module or element name found");
+            }
+            //this.loadExtension(extensionManifest);
+            this.router.config.push(newExtensionRoute);
+            this.extensionRoutes.push(extensionManifest.extensionPath);
           }
         );
       }
@@ -109,11 +154,11 @@ export class AppComponent implements OnInit {
 
   s3upload(event: any) {
     const files = event.target.files;
-    if (files) {
+    if (files && this.extensionPath) {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const fileName = file.name;
-        const filePath = `${userCardManifest.extensionPath}/` + fileName;
+        const filePath = `${this.extensionPath}/` + fileName;
         console.log(fileName);
 
         s3.upload(
@@ -129,5 +174,9 @@ export class AppComponent implements OnInit {
         );
       }
     }
+  }
+
+  setUploadPath(event :any) {
+    this.extensionPath = event.target.value;
   }
 }
